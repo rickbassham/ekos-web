@@ -6,6 +6,15 @@ var static = require('node-static');
 
 const server = http.createServer();
 
+// These three listen for messages from Ekos.
+const messageServer = new WebSocket.Server({ noServer: true });
+const mediaServer = new WebSocket.Server({ noServer: true });
+const cloudServer = new WebSocket.Server({ noServer: true });
+
+// This one listens for messages from the web client.
+const interfaceServer = new WebSocket.Server({ noServer: true });
+
+
 // The signals we want to handle
 // NOTE: although it is tempting, the SIGKILL signal (9) cannot be intercepted and handled
 var signals = {
@@ -16,6 +25,12 @@ var signals = {
 // Do any necessary shutdown logic for our application here
 const shutdown = (signal, value) => {
   console.log("shutdown!");
+
+  messageServer.close();
+  mediaServer.close();
+  cloudServer.close();
+  interfaceServer.close();
+
   server.close(() => {
     console.log(`server stopped by ${signal} with value ${value}`);
     process.exit(128 + value);
@@ -40,14 +55,6 @@ const gpsdListener = new gpsd.Listener({
     }
 });
 
-
-// These three listen for messages from Ekos.
-const messageServer = new WebSocket.Server({ noServer: true });
-const mediaServer = new WebSocket.Server({ noServer: true });
-const cloudServer = new WebSocket.Server({ noServer: true });
-
-// This one listens for messages from the web client.
-const interfaceServer = new WebSocket.Server({ noServer: true });
 
 // Keep track of the last messages of each type (merging them together) so we can
 // send new web clients our current status immediately.
