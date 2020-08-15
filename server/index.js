@@ -4,6 +4,7 @@ const url = require('url');
 var gpsd = require('node-gpsd');
 var static = require('node-static');
 
+const server = http.createServer();
 
 // The signals we want to handle
 // NOTE: although it is tempting, the SIGKILL signal (9) cannot be intercepted and handled
@@ -39,7 +40,6 @@ const gpsdListener = new gpsd.Listener({
     }
 });
 
-const server = http.createServer();
 
 // These three listen for messages from Ekos.
 const messageServer = new WebSocket.Server({ noServer: true });
