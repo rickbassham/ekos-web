@@ -150,6 +150,15 @@ export default new Vuex.Store({
         type: "mount_set_tracking",
         payload: { enabled },
       });
-    }
+    },
+    guideStart: ({dispatch}) => {
+      dispatch('sendMessage', { type: "guide_start" });
+    },
+    guideStop: ({dispatch}) => {
+      dispatch('sendMessage', { type: "guide_stop" });
+    },
+    guideClear: ({dispatch}) => {
+      dispatch('sendMessage', { type: "guide_clear" });
+    },
   }
 });
