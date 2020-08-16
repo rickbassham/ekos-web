@@ -1,26 +1,32 @@
 <template>
   <v-app id="app">
     <v-main>
-      <h2>Mount</h2>
-      <skymap :center="mountPosition"></skymap>
-      <p v-if="lastNotificationFormatted">{{lastNotificationFormatted}}</p>
-      <v-list>
-        <v-list-item>
-          <v-btn
-            :disabled="this.mount.status === 'Idle' || this.mount.status === 'Tracking'"
-            @click="mountAbort"
-          >Abort</v-btn>
-        </v-list-item>
-        <v-list-item>
-          <v-btn :disabled="parkButtonText == 'Parking'" @click="togglePark">{{parkButtonText}}</v-btn>
-        </v-list-item>
-        <v-list-item>
-          <v-btn
-            @click="toggleTracking"
-            :disabled="this.mount.status !== 'Idle' && this.mount.status !== 'Tracking'"
-          >{{trackingButtonText}}</v-btn>
-        </v-list-item>
-      </v-list>
+      <div class="ml-2">
+        <div class="text-h3">Mount</div>
+        <v-divider class="mb-2"></v-divider>
+        <div class="text-h6">{{mount.status}}</div>
+        <skymap :center="mountPosition"></skymap>
+        <v-divider class="mb-2 mt-2"></v-divider>
+        <p v-if="lastNotificationFormatted">{{lastNotificationFormatted}}</p>
+        <v-divider class="mb-2"></v-divider>
+        <v-list>
+          <v-list-item>
+            <v-btn block
+              :disabled="this.mount.status === 'Idle' || this.mount.status === 'Tracking'"
+              @click="mountAbort"
+            >Abort</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn block :disabled="parkButtonText == 'Parking'" @click="togglePark">{{parkButtonText}}</v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn block
+              @click="toggleTracking"
+              :disabled="this.mount.status !== 'Idle' && this.mount.status !== 'Tracking'"
+            >{{trackingButtonText}}</v-btn>
+          </v-list-item>
+        </v-list>
+      </div>
     </v-main>
   </v-app>
 </template>
