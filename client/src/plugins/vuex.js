@@ -166,5 +166,14 @@ export default new Vuex.Store({
     alignStop: ({dispatch}) => {
       dispatch('sendMessage', { type: "align_stop" });
     },
+    focusStop: ({dispatch}) => {
+      dispatch('sendMessage', { type: "focus_stop" });
+    },
+    focusStart: ({dispatch}) => {
+      dispatch('sendMessage', { type: "focus_start" });
+    },
+    focusReset: ({dispatch}) => {
+      dispatch('sendMessage', { type: "focus_reset" });
+    },
   }
 });
