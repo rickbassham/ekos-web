@@ -10,8 +10,10 @@
   "dependencies": {
     "@iconify/icons-mdi": "^1.0.130",
     "core-js": "^3.6.5",
+    "d3-celestial": "^0.7.30",
     "vue": "^2.6.11",
     "vue-native-websocket": "^2.0.14",
+    "vue-router": "^3.4.3",
     "vue-ws": "0.0.2-beta",
     "vuetify": "^2.3.8",
     "vuex": "^3.5.1",
