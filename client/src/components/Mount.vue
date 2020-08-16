@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-main>
       <div class="ml-2">
-        <div class="text-h3">Mount</div>
+        <div class="text-h4">Mount</div>
         <v-divider class="mb-2"></v-divider>
         <div class="text-h6">{{mount.status}}</div>
         <skymap :center="mountPosition"></skymap>

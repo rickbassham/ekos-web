@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-main>
       <div class="ml-2">
-        <div class="text-h3">Guide</div>
+        <div class="text-h4">Guide</div>
         <v-divider class="mb-2"></v-divider>
         <div class="text-h6">{{guide.status}}</div>
         <v-row no-gutters>

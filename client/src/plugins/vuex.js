@@ -160,5 +160,11 @@ export default new Vuex.Store({
     guideClear: ({dispatch}) => {
       dispatch('sendMessage', { type: "guide_clear" });
     },
+    alignSolve: ({dispatch}) => {
+      dispatch('sendMessage', { type: "align_solve" });
+    },
+    alignStop: ({dispatch}) => {
+      dispatch('sendMessage', { type: "align_stop" });
+    },
   }
 });
