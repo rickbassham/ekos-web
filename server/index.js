@@ -124,7 +124,7 @@ interfaceServer.on("connection", (ws) => {
 
   // Update the web client with our current state.
   Object.keys(lastMessages).forEach(key => {
-    sendJson(ws, { type: key, payload: lastMessages[key] });
+    sendJSON(ws, { type: key, payload: lastMessages[key] });
   });
 
   messageServer.clients.forEach(c => {
