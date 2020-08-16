@@ -38,6 +38,35 @@ export default new Vuex.Store({
       status: "Idle"
     },
     notifications: [],
+    lastNotification: null,
+  },
+  getters: {
+    mountPosition: state => {
+      if (state.mount.ra && state.mount.de) {
+        return [
+          parseFloat(state.mount.ra.toFixed(3)),
+          parseFloat(state.mount.de.toFixed(3)),
+        ];
+      }
+
+      return null;
+    },
+    gpsLocation: state => {
+      if (state.gps.lat && state.gps.lon) {
+        return [
+          parseFloat(state.gps.lat.toFixed(3)),
+          parseFloat(state.gps.lon.toFixed(3)),
+        ];
+      }
+      return null;
+    },
+    lastNotificationFormatted: state => {
+      if (state.lastNotification) {
+        return state.lastNotification.message + " " + state.lastNotification.ts.toLocaleTimeString("en-US");
+      }
+
+      return null;
+    }
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {
@@ -55,52 +84,42 @@ export default new Vuex.Store({
       state.socket.message = message
       if (message.type == "image_data") {
         state.preview.last_image = message.payload;
-      }
-
-      if (message.type == "new_mount_state") {
+      } else if (message.type == "new_mount_state") {
         state.mount = {
           ...state.mount,
           ...message.payload,
         };
-      }
-
-      if (message.type == "new_guide_state") {
+      } else if (message.type == "new_guide_state") {
         state.guide = {
           ...state.guide,
           ...message.payload,
         };
-      }
-
-      if (message.type == "new_focus_state") {
+      } else if (message.type == "new_focus_state") {
         state.focus = {
           ...state.focus,
           ...message.payload,
         };
-      }
-
-      if (message.type == "new_capture_state") {
+      } else if (message.type == "new_capture_state") {
         state.capture = {
           ...state.capture,
           ...message.payload,
         };
-      }
-
-      if (message.type == "new_align_state") {
+      } else if (message.type == "new_align_state") {
         state.align = {
           ...state.align,
           ...message.payload,
         };
-      }
-
-      if (message.type == "new_gps_state") {
+      } else if (message.type == "new_gps_state") {
         state.gps = {
           ...state.gps,
           ...message.payload,
         };
-      }
-
-      if (message.type == "new_notification") {
-        state.notifications.push({ ts: new Date(), ...message.payload });
+      } else if (message.type == "new_notification") {
+        const msg = { ts: new Date(), ...message.payload }
+        state.notifications.push(msg);
+        state.lastNotification = msg;
+      } else {
+        console.warn({...message});
       }
     },
     // mutations for reconnect methods
@@ -112,8 +131,23 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    sendMessage: function (context, message) {
-      Vue.prototype.$socket.send(message)
+    sendMessage: (context, message) => {
+      Vue.prototype.$socket.send(JSON.stringify(message))
+    },
+    mountPark: ({ dispatch }) => {
+      dispatch('sendMessage', { type: "mount_park" });
+    },
+    mountUnpark: ({ dispatch }) => {
+      dispatch('sendMessage', { type: "mount_unpark" });
+    },
+    mountAbort: ({ dispatch }) => {
+      dispatch('sendMessage', { type: "mount_abort" });
+    },
+    mountSetTracking: ({dispatch}, enabled) => {
+      dispatch('sendMessage', {
+        type: "mount_set_tracking",
+        payload: { enabled },
+      });
     }
   }
 });
