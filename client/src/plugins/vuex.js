@@ -15,6 +15,8 @@ export default new Vuex.Store({
     },
     gps: {
       mode: 0,
+      lat: null,
+      lon: null,
     },
     mount: {
       status: "Idle",
@@ -42,7 +44,7 @@ export default new Vuex.Store({
   },
   getters: {
     mountPosition: state => {
-      if (state.mount.ra && state.mount.de) {
+      if (state.mount.ra !== null && state.mount.de !== null) {
         return [
           parseFloat(state.mount.ra.toFixed(3)),
           parseFloat(state.mount.de.toFixed(3)),
@@ -52,7 +54,7 @@ export default new Vuex.Store({
       return null;
     },
     gpsLocation: state => {
-      if (state.gps.lat && state.gps.lon) {
+      if (state.gps.lat !== null && state.gps.lon !== null) {
         return [
           parseFloat(state.gps.lat.toFixed(3)),
           parseFloat(state.gps.lon.toFixed(3)),
