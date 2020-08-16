@@ -31,6 +31,7 @@ export default {
         transform: "equatorial",
         planets: {show: true, names: true},
         horizon: {show: true, opacity: 1},
+        stars: {propername: true},
         follow: "center",
         center: this.center,
         controls: false,
