@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <v-main>
-      <h2>Guide</h2>
+      <h2>Logs</h2>
       <v-list-item v-for="message in messages" :key="message.uuid">
         <v-list-item-content>
           <v-list-item-title>{{message.message}}</v-list-item-title>
