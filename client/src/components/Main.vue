@@ -1,8 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-img class="ma-1" :src="preview.last_image" max-width="640">
-      </v-img>
+      <v-img class="ma-1" :src="preview.last_image" max-width="640"></v-img>
       <h2>{{mount.target}}</h2>
       <p v-if="lastNotificationFormatted">{{lastNotificationFormatted}}</p>
       <ul>

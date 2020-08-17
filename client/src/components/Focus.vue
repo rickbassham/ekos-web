@@ -69,7 +69,7 @@ export default {
       } else {
         this.focusStop();
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -175,5 +175,14 @@ export default new Vuex.Store({
     focusReset: ({dispatch}) => {
       dispatch('sendMessage', { type: "focus_reset" });
     },
+    captureStop: ({dispatch}) => {
+      dispatch('sendMessage', { type: "capture_stop" });
+    },
+    captureStart: ({dispatch}) => {
+      dispatch('sendMessage', { type: "capture_start" });
+    },
+    capturePreview: ({dispatch}) => {
+      dispatch('sendMessage', { type: "capture_preview" });
+    },
   }
 });
