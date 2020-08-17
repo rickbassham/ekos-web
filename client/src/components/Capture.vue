@@ -76,7 +76,7 @@ export default {
       'preview',
     ]),
     startStopText() {
-      if (this.capture.status === 'Idle') {
+      if (this.capture.status === 'Idle' || this.capture.status === 'Complete') {
         return "Start";
       }
 
