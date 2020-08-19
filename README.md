@@ -4,8 +4,10 @@ A simple web server and client that listens for a connection from KStars Ekos
 and provides an easy way to keep track of your astrophotography session from a
 small screen.
 
-You can't control Ekos with it (yet) but you can see the last image taken,
-GPS, mount, guider, focus, capture, and alignment status.
+You can now control simple things in Ekos, like capturing a preview image, start/stop
+guiding, start/stop auto focus, sovle the current view, park/unpark the mount.
+
+See screenshots below for more info.
 
 ## Installation
 
@@ -41,7 +43,7 @@ node index.js
 
 After you have it running, you can visit http://localhost:3000 to view the page.
 
-![ekos-web](docs/1.png)
+![ekos-web](docs/main.png)
 
 Now launch KStars and Ekos as usual, but now you'll need to connect to KStars Live
 in offline mode.
@@ -60,8 +62,9 @@ imaging computer's address. For me, it would be http://rick-astrobuntupi:3000.
 
 Here are a few more shots with examples.
 
-![ekos-web](docs/2.png)
-![ekos-web](docs/3.png)
-![ekos-web](docs/4.png)
-![ekos-web](docs/5.png)
-![ekos-web](docs/6.png)
+![ekos-web](docs/capture.png)
+![ekos-web](docs/align.png)
+![ekos-web](docs/focus.png)
+![ekos-web](docs/guide.png)
+![ekos-web](docs/mount.png)
+![ekos-web](docs/logs.png)
