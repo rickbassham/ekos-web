@@ -1,8 +1,9 @@
 const http = require('http');
 const WebSocket = require('ws');
 const url = require('url');
-var gpsd = require('node-gpsd');
-var static = require('node-static');
+const gpsd = require('node-gpsd');
+const static = require('node-static');
+const enableGracefulShutdown = require('server-graceful-shutdown');
 
 const debug = process.env.EKOS_WEB_DEBUG === "1";
 
@@ -23,6 +24,7 @@ var signals = {
   'SIGINT': 2,
   'SIGTERM': 15
 };
+
 // Do any necessary shutdown logic for our application here
 const shutdown = (signal, value) => {
   console.log("shutdown!");
@@ -32,11 +34,12 @@ const shutdown = (signal, value) => {
   cloudServer.close();
   interfaceServer.close();
 
-  server.close(() => {
+  server.shutdown(() => {
     console.log(`server stopped by ${signal} with value ${value}`);
     process.exit(128 + value);
   });
 };
+
 // Create a listener for each of the signals that we want to handle
 Object.keys(signals).forEach((signal) => {
   process.on(signal, () => {
@@ -148,6 +151,17 @@ messageServer.on("connection", (ws) => {
     interfaceServer.clients.forEach(c => {
       sendJSON(c, msgObj);
     });
+
+    if (msgObj.type === "new_connection_state" && msgObj.payload.online) {
+      messageServer.clients.forEach(c => {
+        setupMessageServerOptions(c);
+      });
+
+      // Tell Ekos to send us images.
+      mediaServer.clients.forEach(c => {
+        setupMediaServerOptions(c);
+      });
+    }
   });
 
   setupMessageServerOptions(ws);
@@ -243,6 +257,8 @@ server.on("upgrade", (req, socket, head) => {
       socket.destroy();
   }
 });
+
+enableGracefulShutdown(server, 1000);
 
 // Ekos in offline mode will try to connect to localhost:3000.
 server.listen(3000);
