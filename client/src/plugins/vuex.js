@@ -39,6 +39,10 @@ export default new Vuex.Store({
     align: {
       status: "Idle"
     },
+    camera: null,
+    cameras: [],
+    filter_wheels: [],
+    filters: [],
     notifications: [],
     lastNotification: null,
   },
@@ -116,10 +120,43 @@ export default new Vuex.Store({
           ...state.gps,
           ...message.payload,
         };
+      }  else if (message.type == "new_camera_state") {
+        state.camera = {
+          ...state.camera,
+          ...message.payload,
+        };
       } else if (message.type == "new_notification") {
         const msg = { ts: new Date(), ...message.payload }
         state.notifications.push(msg);
         state.lastNotification = msg;
+      } else if (message.type == "capture_set_settings") {
+        state.capture.settings = {
+          ...state.capture.settings,
+          ...message.payload,
+        };
+
+        state.filter_wheels.forEach(fw => {
+          if (fw.name === state.capture.settings.fw) {
+            state.filters = fw.filters;
+          }
+        });
+      } else if (message.type == "get_cameras") {
+        state.cameras = [];
+        for (const key in message.payload) {
+          state.cameras.push(JSON.parse(JSON.stringify(message.payload[key])));
+        }
+      } else if (message.type == "get_filter_wheels") {
+        state.filter_wheels = [];
+
+        for (const key in message.payload) {
+          const item = message.payload[key];
+
+          if (state.capture.settings && state.capture.settings.fw && state.capture.settings.fw === item.name) {
+            state.filters = item.filters;
+          }
+
+          state.filter_wheels.push(JSON.parse(JSON.stringify(item)));
+        }
       } else {
         console.warn({...message});
       }
@@ -181,8 +218,13 @@ export default new Vuex.Store({
     captureStart: ({dispatch}) => {
       dispatch('sendMessage', { type: "capture_start" });
     },
-    capturePreview: ({dispatch}) => {
-      dispatch('sendMessage', { type: "capture_preview" });
+    capturePreview: ({dispatch, state}, settings) => {
+      settings = {
+        ...state.capture.settings,
+        ...settings,
+      }
+
+      dispatch('sendMessage', { type: "capture_preview", payload: settings });
     },
   }
 });
