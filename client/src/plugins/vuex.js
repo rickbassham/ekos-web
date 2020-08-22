@@ -10,6 +10,7 @@ export default new Vuex.Store({
       message: '',
       reconnectError: false,
     },
+    connection: null,
     preview: {
       last_image: null,
     },
@@ -93,6 +94,11 @@ export default new Vuex.Store({
       } else if (message.type == "new_mount_state") {
         state.mount = {
           ...state.mount,
+          ...message.payload,
+        };
+      } else if (message.type == "new_connection_state") {
+        state.connection = {
+          ...state.connection,
           ...message.payload,
         };
       } else if (message.type == "new_guide_state") {

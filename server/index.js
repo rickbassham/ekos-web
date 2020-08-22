@@ -164,6 +164,12 @@ messageServer.on("connection", (ws) => {
     }
   });
 
+  ws.on("close", () => {
+    interfaceServer.clients.forEach(c => {
+      sendJSON(c, {type: "new_connection_state", payload: {connected: false, online: false}});
+    });
+  });
+
   setupMessageServerOptions(ws);
 });
 

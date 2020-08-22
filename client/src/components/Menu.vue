@@ -60,14 +60,18 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-      <v-app-bar app>
+    <v-app-bar app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Ekos Web</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <iconify-icon v-if="connected" icon="cloud" height="24"></iconify-icon>
+      <iconify-icon v-if="ekosStarted" icon="telescope" height="24" class="ml-2"></iconify-icon>
     </v-app-bar>
   </div>
 </template>
 <script>
 import Vue from 'vue'
+import { mapState } from "vuex";
 import IconifyIcon from "@iconify/vue";
 import telescope from "@iconify/icons-mdi/telescope";
 import target from "@iconify/icons-mdi/target";
@@ -76,6 +80,7 @@ import camera from "@iconify/icons-mdi/camera";
 import compass from "@iconify/icons-mdi/compass";
 import magnify from "@iconify/icons-mdi/magnify";
 import comment from "@iconify/icons-mdi/comment";
+import cloud from "@iconify/icons-mdi/cloud";
 
 IconifyIcon.addIcon("telescope", telescope);
 IconifyIcon.addIcon("target", target);
@@ -84,10 +89,22 @@ IconifyIcon.addIcon("camera", camera);
 IconifyIcon.addIcon("compass", compass);
 IconifyIcon.addIcon("magnify", magnify);
 IconifyIcon.addIcon("comment", comment);
+IconifyIcon.addIcon("cloud", cloud);
 
 export default Vue.component('Menu', {
   components: {
     IconifyIcon,
+  },
+  computed: {
+    ...mapState([
+      'connection',
+    ]),
+    connected() {
+      return this.connection?.connected;
+    },
+    ekosStarted() {
+      return this.connection?.online;
+    },
   },
   data: () => ({
     drawer: null,
