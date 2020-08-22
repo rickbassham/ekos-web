@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:latest as clientbuild
 
 RUN mkdir /client
 WORKDIR /client
@@ -9,14 +9,15 @@ WORKDIR /client
 COPY client/ /client
 RUN npm run build
 
-RUN mkdir /server
-RUN cp -r /client/dist/ /server/static
+FROM node:latest
 
-RUN rm -Rf /client
+RUN mkdir /server
 
 WORKDIR /server
 COPY server/package.json /server
 RUN npm install
+
+COPY --from=clientbuild /client/dist/ /server/static
 
 WORKDIR /server
 COPY server/ /server

@@ -1,48 +1,44 @@
 <template>
-  <v-app id="app">
-    <v-main>
-      <div class="ml-2">
-        <div class="text-h4">Mount</div>
-        <v-divider class="mb-2"></v-divider>
-        <div class="text-h6">{{mount.status}}</div>
-        <skymap :center="mountPosition"></skymap>
-        <v-divider class="mb-2 mt-2"></v-divider>
-        <p v-if="lastNotificationFormatted">{{lastNotificationFormatted}}</p>
-        <v-divider class="mb-2"></v-divider>
-        <v-list>
-          <v-list-item>
-            <v-btn block
-              :disabled="this.mount.status === 'Idle' || this.mount.status === 'Tracking'"
-              @click="mountAbort"
-            >Abort</v-btn>
-          </v-list-item>
-          <v-list-item>
-            <v-btn block :disabled="parkButtonText == 'Parking'" @click="togglePark">{{parkButtonText}}</v-btn>
-          </v-list-item>
-          <v-list-item>
-            <v-btn block
-              @click="toggleTracking"
-              :disabled="this.mount.status !== 'Idle' && this.mount.status !== 'Tracking'"
-            >{{trackingButtonText}}</v-btn>
-          </v-list-item>
-        </v-list>
-      </div>
-    </v-main>
-  </v-app>
+  <div class="pa-2">
+    <div class="text-h4">Mount</div>
+    <v-divider class="mb-2"></v-divider>
+    <div class="text-h6">{{mount.status}}</div>
+    <skymap :center="mountPosition"></skymap>
+    <LastNotification />
+    <v-divider class="mb-2"></v-divider>
+    <v-list>
+      <v-list-item>
+        <v-btn block
+          :disabled="this.mount.status === 'Idle' || this.mount.status === 'Tracking'"
+          @click="mountAbort"
+        >Abort</v-btn>
+      </v-list-item>
+      <v-list-item>
+        <v-btn block :disabled="parkButtonText == 'Parking'" @click="togglePark">{{parkButtonText}}</v-btn>
+      </v-list-item>
+      <v-list-item>
+        <v-btn block
+          @click="toggleTracking"
+          :disabled="this.mount.status !== 'Idle' && this.mount.status !== 'Tracking'"
+        >{{trackingButtonText}}</v-btn>
+      </v-list-item>
+    </v-list>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
 import skymap from "@/components/SkyMap";
+import LastNotification from "@/components/LastNotification"
 
 export default {
   components: {
     skymap,
+    LastNotification,
   },
   computed: {
     ...mapGetters([
       "mountPosition",
-      "lastNotificationFormatted"]
-    ),
+    ]),
     ...mapState([
       'mount',
     ]),

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import {buildDevice} from '@/util/device';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -46,6 +48,7 @@ export default new Vuex.Store({
     filters: [],
     notifications: [],
     lastNotification: null,
+    devices: {},
   },
   getters: {
     mountPosition: state => {
@@ -89,6 +92,9 @@ export default new Vuex.Store({
     // default handler called for all methods
     SOCKET_ONMESSAGE(state, message) {
       state.socket.message = message
+
+      console.log(message.type);
+
       if (message.type == "image_data") {
         state.preview.last_image = message.payload;
       } else if (message.type == "new_mount_state") {
@@ -101,6 +107,20 @@ export default new Vuex.Store({
           ...state.connection,
           ...message.payload,
         };
+
+        if (message.payload.online) {
+          this.dispatch("sendMessage", { type: "get_states" });
+          this.dispatch("sendMessage", { type: "get_cameras" });
+          this.dispatch("sendMessage", { type: "get_mounts" });
+          this.dispatch("sendMessage", { type: "get_filter_wheels" });
+          this.dispatch("sendMessage", { type: "get_domes" });
+          this.dispatch("sendMessage", { type: "get_caps" });
+          this.dispatch("sendMessage", { type: "get_drivers" });
+          this.dispatch("sendMessage", { type: "option_set_high_bandwidth", payload: true });
+          this.dispatch("sendMessage", { type: "option_set_image_transfer", payload: true });
+          this.dispatch("sendMessage", { type: "option_set_notifications", payload: true });
+        }
+
       } else if (message.type == "new_guide_state") {
         state.guide = {
           ...state.guide,
@@ -163,6 +183,16 @@ export default new Vuex.Store({
 
           state.filter_wheels.push(JSON.parse(JSON.stringify(item)));
         }
+      } else if (message.type == "get_devices") {
+        for (const key in message.payload) {
+          const item = JSON.parse(JSON.stringify(message.payload[key]));
+          this.dispatch("sendMessage", { type: "device_get", payload: { device: item.name } });
+        }
+      } else if (message.type == "device_get") {
+        const item = JSON.parse(JSON.stringify(message.payload));
+        const device = buildDevice(item);
+
+        state.devices[device.name] = device;
       } else {
         console.warn({...message});
       }
@@ -231,6 +261,9 @@ export default new Vuex.Store({
       }
 
       dispatch('sendMessage', { type: "capture_preview", payload: settings });
+    },
+    devicePropertySet: ({dispatch}, data) => {
+      dispatch('sendMessage', { type: "device_property_set", payload: data });
     },
   }
 });

@@ -80,15 +80,6 @@ const sendJSON = (ws, msg) => {
   ws.send(JSON.stringify(msg));
 };
 
-const setupMessageServerOptions = (ws) => {
-  // Send Ekos options needed to get images, notifications, and then get the
-  // current state of the world directly from Ekos.
-  sendJSON(ws, { type: "option_set_high_bandwidth", payload: true });
-  sendJSON(ws, { type: "option_set_image_transfer", payload: true });
-  sendJSON(ws, { type: "option_set_notifications", payload: true });
-  sendJSON(ws, { type: "get_states" });
-};
-
 const setupMediaServerOptions = (ws) => {
   sendJSON(ws, { type: "set_blobs", payload: true });
 }
@@ -130,10 +121,6 @@ interfaceServer.on("connection", (ws) => {
     sendJSON(ws, { type: key, payload: lastMessages[key] });
   });
 
-  messageServer.clients.forEach(c => {
-    setupMessageServerOptions(c);
-  });
-
   // Tell Ekos to send us images.
   mediaServer.clients.forEach(c => {
     setupMediaServerOptions(c);
@@ -153,11 +140,7 @@ messageServer.on("connection", (ws) => {
     });
 
     if (msgObj.type === "new_connection_state" && msgObj.payload.online) {
-      messageServer.clients.forEach(c => {
-        setupMessageServerOptions(c);
-      });
-
-      // Tell Ekos to send us images.
+     // Tell Ekos to send us images.
       mediaServer.clients.forEach(c => {
         setupMediaServerOptions(c);
       });
@@ -169,8 +152,6 @@ messageServer.on("connection", (ws) => {
       sendJSON(c, {type: "new_connection_state", payload: {connected: false, online: false}});
     });
   });
-
-  setupMessageServerOptions(ws);
 });
 
 mediaServer.on("connection", (ws) => {
