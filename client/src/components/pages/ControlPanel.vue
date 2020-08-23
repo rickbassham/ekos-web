@@ -16,7 +16,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import Device from "@/components/Device.vue";
-import LastNotification from "@/components/LastNotification";
+import LastNotification from "@/components/common/LastNotification";
 
 export default {
   components: {

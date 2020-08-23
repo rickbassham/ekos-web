@@ -5,6 +5,40 @@ import {buildDevice} from '@/util/device';
 
 Vue.use(Vuex);
 
+const defaultEkosStates = {
+  preview: {
+    last_image: null,
+  },
+  mount: {
+    status: "Idle",
+    slewRate: null,
+    target: null,
+    at: null,
+    az: null,
+    de: null,
+    ra: null,
+  },
+  guide: {
+    status: "Idle"
+  },
+  focus: {
+    status: "Idle"
+  },
+  capture: {
+    status: "Idle"
+  },
+  align: {
+    status: "Idle"
+  },
+  camera: null,
+  cameras: [],
+  filter_wheels: [],
+  filters: [],
+  notifications: [],
+  lastNotification: null,
+  devices: {},
+};
+
 export default new Vuex.Store({
   state: {
     socket: {
@@ -13,42 +47,13 @@ export default new Vuex.Store({
       reconnectError: false,
     },
     connection: null,
-    preview: {
-      last_image: null,
-    },
     gps: {
       mode: 0,
       lat: null,
       lon: null,
     },
-    mount: {
-      status: "Idle",
-      slewRate: null,
-      target: null,
-      at: null,
-      az: null,
-      de: null,
-      ra: null,
-    },
-    guide: {
-      status: "Idle"
-    },
-    focus: {
-      status: "Idle"
-    },
-    capture: {
-      status: "Idle"
-    },
-    align: {
-      status: "Idle"
-    },
-    camera: null,
-    cameras: [],
-    filter_wheels: [],
-    filters: [],
-    notifications: [],
-    lastNotification: null,
-    devices: {},
+    profiles: [],
+    ...JSON.parse(JSON.stringify(defaultEkosStates)),
   },
   getters: {
     mountPosition: state => {
@@ -108,19 +113,28 @@ export default new Vuex.Store({
           ...message.payload,
         };
 
-        if (message.payload.online) {
-          this.dispatch("sendMessage", { type: "get_states" });
-          this.dispatch("sendMessage", { type: "get_cameras" });
-          this.dispatch("sendMessage", { type: "get_mounts" });
-          this.dispatch("sendMessage", { type: "get_filter_wheels" });
-          this.dispatch("sendMessage", { type: "get_domes" });
-          this.dispatch("sendMessage", { type: "get_caps" });
-          this.dispatch("sendMessage", { type: "get_drivers" });
-          this.dispatch("sendMessage", { type: "option_set_high_bandwidth", payload: true });
-          this.dispatch("sendMessage", { type: "option_set_image_transfer", payload: true });
-          this.dispatch("sendMessage", { type: "option_set_notifications", payload: true });
-        }
+        if (message.payload.connected) {
+          if (message.payload.online) {
+            this.dispatch("sendMessage", { type: "get_states" });
+            this.dispatch("sendMessage", { type: "get_cameras" });
+            this.dispatch("sendMessage", { type: "get_mounts" });
+            this.dispatch("sendMessage", { type: "get_filter_wheels" });
+            this.dispatch("sendMessage", { type: "get_domes" });
+            this.dispatch("sendMessage", { type: "get_caps" });
+            this.dispatch("sendMessage", { type: "get_drivers" });
+            this.dispatch("sendMessage", { type: "option_set_high_bandwidth", payload: true });
+            this.dispatch("sendMessage", { type: "option_set_image_transfer", payload: true });
+            this.dispatch("sendMessage", { type: "option_set_notifications", payload: true });
+          } else {
+            // Still connected to KStars, but Ekos was closed. Reset states to default.
 
+            Object.keys(defaultEkosStates).forEach(k => {
+              state[k] = defaultEkosStates[k];
+            });
+
+            this.dispatch("sendMessage", { type: "get_profiles" });
+          }
+        }
       } else if (message.type == "new_guide_state") {
         state.guide = {
           ...state.guide,
@@ -193,7 +207,9 @@ export default new Vuex.Store({
         const device = buildDevice(item);
 
         state.devices[device.name] = device;
-      } else {
+      } else if (message.type === "get_profiles") {
+        state.profiles = message.payload;
+      }else {
         console.warn({...message});
       }
     },
@@ -264,6 +280,9 @@ export default new Vuex.Store({
     },
     devicePropertySet: ({dispatch}, data) => {
       dispatch('sendMessage', { type: "device_property_set", payload: data });
+    },
+    startProfile: ({dispatch}, profile) => {
+      dispatch('sendMessage', { type: "profile_start", payload: { name: profile }});
     },
   }
 });

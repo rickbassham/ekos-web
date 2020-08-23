@@ -139,17 +139,22 @@ messageServer.on("connection", (ws) => {
       sendJSON(c, msgObj);
     });
 
-    if (msgObj.type === "new_connection_state" && msgObj.payload.online) {
-     // Tell Ekos to send us images.
-      mediaServer.clients.forEach(c => {
-        setupMediaServerOptions(c);
-      });
+    if (msgObj.type === "new_connection_state") {
+      if (msgObj.payload.online) {
+        // Tell Ekos to send us images.
+        mediaServer.clients.forEach(c => {
+          setupMediaServerOptions(c);
+        });
+      } else {
+        console.log("clearing messages")
+        lastMessages = {};
+      }
     }
   });
 
   ws.on("close", () => {
     interfaceServer.clients.forEach(c => {
-      sendJSON(c, {type: "new_connection_state", payload: {connected: false, online: false}});
+      sendJSON(c, { type: "new_connection_state", payload: { connected: false, online: false } });
     });
   });
 });

@@ -67,7 +67,7 @@
 </template>
 <script>
 import { mapState, mapActions } from "vuex";
-import LastNotification from "@/components/LastNotification"
+import LastNotification from "@/components/common/LastNotification"
 
 export default {
   components: {

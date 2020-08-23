@@ -28,7 +28,7 @@
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
 import skymap from "@/components/SkyMap";
-import LastNotification from "@/components/LastNotification"
+import LastNotification from "@/components/common/LastNotification"
 
 export default {
   components: {
