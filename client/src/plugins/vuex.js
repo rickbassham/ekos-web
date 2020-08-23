@@ -115,6 +115,7 @@ export default new Vuex.Store({
 
         if (message.payload.connected) {
           if (message.payload.online) {
+            this.dispatch("sendMessage", { type: "set_client_state", payload: { state: true } });
             this.dispatch("sendMessage", { type: "get_states" });
             this.dispatch("sendMessage", { type: "get_cameras" });
             this.dispatch("sendMessage", { type: "get_mounts" });
