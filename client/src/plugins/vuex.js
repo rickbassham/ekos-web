@@ -4,48 +4,48 @@ import Vuex from 'vuex'
 import { buildDevice } from '@/util/device';
 
 import {
-  IMAGE_DATA,
-  NEW_MOUNT_STATE,
-  NEW_CONNECTION_STATE,
-  NEW_GUIDE_STATE,
-  NEW_FOCUS_STATE,
-  NEW_CAPTURE_STATE,
-  NEW_ALIGN_STATE,
-  NEW_GPS_STATE,
-  NEW_CAMERA_STATE,
-  NEW_NOTIFICATION,
-  CAPTURE_SET_SETTINGS,
-  GET_CAMERAS,
-  GET_FILTER_WHEELS,
-  GET_DEVICES,
-  DEVICE_GET,
-  GET_PROFILES,
-  MOUNT_PARK,
-  MOUNT_UNPARK,
-  MOUNT_ABORT,
-  MOUNT_SET_TRACKING,
-  GUIDE_START,
-  GUIDE_STOP,
-  GUIDE_CLEAR,
   ALIGN_SOLVE,
   ALIGN_STOP,
-  FOCUS_STOP,
-  FOCUS_START,
-  FOCUS_RESET,
-  CAPTURE_STOP,
-  CAPTURE_START,
   CAPTURE_PREVIEW,
+  CAPTURE_SET_SETTINGS,
+  CAPTURE_START,
+  CAPTURE_STOP,
+  DEVICE_GET,
   DEVICE_PROPERTY_SET,
-  START_PROFILE,
-  SET_CLIENT_STATE,
-  GET_STATES,
-  GET_MOUNTS,
-  GET_DOMES,
+  FOCUS_RESET,
+  FOCUS_START,
+  FOCUS_STOP,
+  GET_CAMERAS,
   GET_CAPS,
+  GET_DEVICES,
+  GET_DOMES,
   GET_DRIVERS,
+  GET_FILTER_WHEELS,
+  GET_MOUNTS,
+  GET_PROFILES,
+  GET_STATES,
+  GUIDE_CLEAR,
+  GUIDE_START,
+  GUIDE_STOP,
+  IMAGE_DATA,
+  MOUNT_ABORT,
+  MOUNT_PARK,
+  MOUNT_SET_TRACKING,
+  MOUNT_UNPARK,
+  NEW_ALIGN_STATE,
+  NEW_CAMERA_STATE,
+  NEW_CAPTURE_STATE,
+  NEW_CONNECTION_STATE,
+  NEW_FOCUS_STATE,
+  NEW_GPS_STATE,
+  NEW_GUIDE_STATE,
+  NEW_MOUNT_STATE,
+  NEW_NOTIFICATION,
   OPTION_SET_HIGH_BANDWIDTH,
   OPTION_SET_IMAGE_TRANSFER,
   OPTION_SET_NOTIFICATIONS,
+  SET_CLIENT_STATE,
+  START_PROFILE,
 } from '../util/messageTypes';
 
 Vue.use(Vuex);
@@ -186,7 +186,7 @@ export default new Vuex.Store({
           // Still connected to KStars, but Ekos was closed. Reset states to default.
 
           Object.keys(defaultEkosStates).forEach(k => {
-            state[k] = defaultEkosStates[k];
+            Vue.set(state, k, defaultEkosStates[k]);
           });
 
           this.dispatch("sendMessage", { type: GET_PROFILES });
@@ -242,28 +242,31 @@ export default new Vuex.Store({
 
       state.filter_wheels.forEach(fw => {
         if (fw.name === state.capture.settings.fw) {
-          state.filters = fw.filters;
+          Vue.set(state, 'filters', [...fw.filters]);
         }
       });
     },
     [GET_CAMERAS](state, message) {
-      state.cameras = [];
+      const cameras = [];
       for (const key in message.payload) {
-        state.cameras.push(JSON.parse(JSON.stringify(message.payload[key])));
+        cameras.push(JSON.parse(JSON.stringify(message.payload[key])));
       }
+      Vue.set(state, 'cameras', cameras);
     },
     [GET_FILTER_WHEELS](state, message) {
-      state.filter_wheels = [];
+      const filter_wheels = [];
 
       for (const key in message.payload) {
         const item = message.payload[key];
 
         if (state.capture.settings && state.capture.settings.fw && state.capture.settings.fw === item.name) {
-          state.filters = item.filters;
+          Vue.set(state, 'filters', [...item.filters]);
         }
 
-        state.filter_wheels.push(JSON.parse(JSON.stringify(item)));
+        filter_wheels.push(JSON.parse(JSON.stringify(item)));
       }
+
+      Vue.set(state, 'filter_wheels', filter_wheels);
     },
     [GET_DEVICES](state, message) {
       for (const key in message.payload) {
@@ -273,10 +276,10 @@ export default new Vuex.Store({
     },
     [DEVICE_GET](state, message) {
       const device = buildDevice(message.payload);
-      state.devices[device.name] = device;
+      Vue.set(state.devices, device.name, device);
     },
     [GET_PROFILES](state, message) {
-      state.profiles = message.payload;
+      Vue.set(state, 'profiles', [...message.payload]);
     },
   },
   actions: {
