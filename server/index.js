@@ -165,20 +165,33 @@ mediaServer.on("connection", (ws) => {
     // The JSON string is image metadata, the blob is the jpeg image itself.
     // Let's turn those into well formed packets that match our other packet's
     // structure.
-    if (typeof msg === "string") {
-      msg = { type: "image_metadata", payload: JSON.parse(msg) };
-    } else {
-      msg = {
-        type: "image_data",
-        payload: "data:image/jpeg;base64," + msg.toString('base64')
-      };
+
+    const metaEnd = msg.indexOf('}');
+
+    let meta = { type: "image_metadata", payload: JSON.parse(Buffer.from(msg.subarray(0, metaEnd + 1))) };
+
+    interfaceServer.clients.forEach(c => {
+      sendJSON(c, meta);
+    });
+
+    saveToLastMessages(meta);
+
+    let imgStart = msg.indexOf(0xff, metaEnd + 1);
+
+    const raw = Buffer.from(msg.subarray(imgStart));
+
+    const encoded = raw.toString('base64');
+
+    const img = {
+      type: "image_data",
+      payload: "data:image/jpeg;base64," + encoded
     }
 
     interfaceServer.clients.forEach(c => {
-      sendJSON(c, msg);
+      sendJSON(c, img);
     });
 
-    saveToLastMessages(msg);
+    saveToLastMessages(img);
   });
 
   setupMediaServerOptions(ws);
