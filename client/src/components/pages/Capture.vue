@@ -1,7 +1,7 @@
 <template>
   <div class="pa-2">
     <div class="text-h4">Capture</div>
-    <v-img class="ma-1" :src="preview.last_image" max-width="640">
+    <v-img class="ma-1" v-if="preview.image" :src="preview.image.image" :max-width="Math.min(preview.image.width, 800)">
       <v-overlay absolute :value="showCrosshairs" color="rgba(0,0,0,0)">
         <v-img :src="crosshairs"></v-img>
       </v-overlay>

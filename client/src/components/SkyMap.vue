@@ -3,7 +3,7 @@
 </template>
 <style>
   #celestial-map {
-    max-width: 640px;
+    max-width: 800px;
   }
   #celestial-map canvas {
     margin: auto;

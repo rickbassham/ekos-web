@@ -168,13 +168,7 @@ mediaServer.on("connection", (ws) => {
 
     const metaEnd = msg.indexOf('}');
 
-    let meta = { type: "image_metadata", payload: JSON.parse(Buffer.from(msg.subarray(0, metaEnd + 1))) };
-
-    interfaceServer.clients.forEach(c => {
-      sendJSON(c, meta);
-    });
-
-    saveToLastMessages(meta);
+    let data = { type: "image_data", payload: JSON.parse(Buffer.from(msg.subarray(0, metaEnd + 1))) };
 
     let imgStart = msg.indexOf(0xff, metaEnd + 1);
 
@@ -182,16 +176,13 @@ mediaServer.on("connection", (ws) => {
 
     const encoded = raw.toString('base64');
 
-    const img = {
-      type: "image_data",
-      payload: "data:image/jpeg;base64," + encoded
-    }
+    data.payload['image'] = "data:image/jpeg;base64," + encoded;
 
     interfaceServer.clients.forEach(c => {
-      sendJSON(c, img);
+      sendJSON(c, data);
     });
 
-    saveToLastMessages(img);
+    saveToLastMessages(data);
   });
 
   setupMediaServerOptions(ws);
@@ -261,6 +252,20 @@ server.on("upgrade", (req, socket, head) => {
     default:
       socket.destroy();
   }
+});
+
+const livestack = new WebSocket("ws://localhost:5678");
+
+livestack.on("error", () => {});
+
+livestack.on("message", (msg) => {
+  const msgObj = JSON.parse(msg);
+
+  saveToLastMessages(msgObj);
+
+  interfaceServer.clients.forEach(c => {
+    sendJSON(c, msgObj);
+  });
 });
 
 enableGracefulShutdown(server, 1000);

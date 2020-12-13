@@ -1,6 +1,9 @@
 export const IMAGE_DATA = 'image_data';
 export const NEW_GPS_STATE = 'new_gps_state';
 
+export const LIVESTACK_IMAGE = 'livestack_image';
+export const LIVESTACK_LOG = 'livestack_log';
+
 export const GET_CONNECTION = 'get_connection';
 export const GET_STATES = 'get_states';
 export const GET_CAMERAS = 'get_cameras';

@@ -46,13 +46,15 @@ import {
   OPTION_SET_NOTIFICATIONS,
   SET_CLIENT_STATE,
   START_PROFILE,
+  LIVESTACK_IMAGE,
+  LIVESTACK_LOG,
 } from '../util/messageTypes';
 
 Vue.use(Vuex);
 
 const defaultEkosStates = {
   preview: {
-    last_image: null,
+    image: null,
   },
   mount: {
     status: "Idle",
@@ -82,6 +84,10 @@ const defaultEkosStates = {
   notifications: [],
   lastNotification: null,
   devices: {},
+  livestack: {
+    messages: [],
+    image: null,
+  },
 };
 
 export default new Vuex.Store({
@@ -155,7 +161,24 @@ export default new Vuex.Store({
       state.socket.reconnectError = true;
     },
     [IMAGE_DATA](state, message) {
-      state.preview.last_image = message.payload;
+      const shape = message.payload.resolution.split('x');
+
+      message.payload.width = parseInt(shape[0]);
+      message.payload.height = parseInt(shape[1]);
+
+      switch (message.payload.uuid) {
+        case "+G":
+          state.guide.image = message.payload;
+          break;
+        case "+A":
+          state.align.image = message.payload;
+          break;
+        case "+F":
+          state.focus.image = message.payload;
+          break;
+        default:
+          state.preview.image = message.payload;
+      }
     },
     [NEW_MOUNT_STATE](state, message) {
       state.mount = {
@@ -279,7 +302,14 @@ export default new Vuex.Store({
       Vue.set(state.devices, device.name, device);
     },
     [GET_PROFILES](state, message) {
-      Vue.set(state, 'profiles', [...message.payload]);
+      Vue.set(state, 'profiles', [...message.payload.profiles]);
+    },
+    [LIVESTACK_LOG](state, message) {
+      const msg = { ts: new Date(), message: message.payload }
+      state.livestack.messages.push(msg);
+    },
+    [LIVESTACK_IMAGE](state, message) {
+      state.livestack.image = message.payload;
     },
   },
   actions: {

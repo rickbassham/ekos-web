@@ -1,6 +1,6 @@
 <template>
   <div class="pa-2">
-    <v-img class="ma-1" :src="preview.last_image" max-width="640"></v-img>
+    <v-img class="ma-1" v-if="preview.image" :src="preview.image.image" :max-width="Math.min(preview.image.width, 800)"></v-img>
     <h2>{{mount.target}}</h2>
     <LastNotification />
     <v-divider class="mb-2"></v-divider>

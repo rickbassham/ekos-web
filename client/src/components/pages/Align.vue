@@ -1,6 +1,7 @@
 <template>
   <div class="pa-2">
     <div class="text-h4">Align</div>
+    <v-img class="ma-1" v-if="align.image" :src="align.image.image" :max-width="Math.min(align.image.width, 800)"></v-img>
     <v-divider class="mb-2"></v-divider>
     <div class="text-h6">{{align.status}}</div>
     <div v-if="align.solution">

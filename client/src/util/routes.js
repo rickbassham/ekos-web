@@ -5,6 +5,7 @@ import Align from '@/components/pages/Align.vue'
 import Guide from '@/components/pages/Guide.vue'
 import Focus from '@/components/pages/Focus.vue'
 import Logs from '@/components/pages/Logs.vue'
+import LiveStack from '@/components/pages/LiveStack.vue'
 //import ControlPanel from '@/components/pages/ControlPanel.vue'
 
 import IconifyIcon from "@iconify/vue";
@@ -63,6 +64,11 @@ const routes = [{
   path: "/logs",
   icon: "comment",
   component: Logs,
+},{
+  name: "LiveStack",
+  path: "/livestack",
+  icon: "camera",
+  component: LiveStack,
 },/*{
   name: "ControlPanel",
   label: "Control Panel",
