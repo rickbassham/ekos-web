@@ -3,6 +3,7 @@ node_modules
 /dist
 server/static
 client/dist
+livestack
 
 # local env files
 .env.local

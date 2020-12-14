@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  ekos-web:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      # comment out this environment variable to disable livestack
+      - LIVESTACK_ENDPOINT=ws://livestack:5678
+  livestack:
+    # comment out this entire livestack section if you don't want to use it
+    # this can be found at https://github.com/rickbassham/livestack
+    # clone that repo and do a `docker-compose build` to build the
+    # rickbassham/livestack:latest image
+    image: rickbassham/livestack:latest
+    ports:
+      - 5678:5678
+    volumes:
+      - ./livestack/input:/livestack/input
+      - ./livestack/output:/livestack/output
+      - ./livestack/storage:/livestack/storage
+    environment:
+      - STORAGE_FOLDER=/livestack/storage
+      - OUTPUT_FOLDER=/livestack/output
+      - INPUT_FOLDER=/livestack/input

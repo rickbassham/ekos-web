@@ -1,11 +1,13 @@
 const http = require('http');
 const WebSocket = require('ws');
+const ReconnectingWebSocket = require('reconnecting-websocket');
 const url = require('url');
 const gpsd = require('node-gpsd');
 const static = require('node-static');
 const enableGracefulShutdown = require('server-graceful-shutdown');
 
 const debug = process.env.EKOS_WEB_DEBUG === "1";
+const livestackEndpoint = process.env.LIVESTACK_ENDPOINT;
 
 const server = http.createServer();
 
@@ -254,19 +256,23 @@ server.on("upgrade", (req, socket, head) => {
   }
 });
 
-const livestack = new WebSocket("ws://localhost:5678");
-
-livestack.on("error", () => {});
-
-livestack.on("message", (msg) => {
-  const msgObj = JSON.parse(msg);
-
-  saveToLastMessages(msgObj);
-
-  interfaceServer.clients.forEach(c => {
-    sendJSON(c, msgObj);
+if (livestackEndpoint) {
+  const livestack = new ReconnectingWebSocket(livestackEndpoint, [], {
+    WebSocket: WebSocket,
   });
-});
+
+  livestack.addEventListener("error", () => {});
+
+  livestack.addEventListener("message", (msg) => {
+    const msgObj = JSON.parse(msg.data);
+
+    saveToLastMessages(msgObj);
+
+    interfaceServer.clients.forEach(c => {
+      sendJSON(c, msgObj);
+    });
+  });
+}
 
 enableGracefulShutdown(server, 1000);
 
