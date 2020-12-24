@@ -1,4 +1,4 @@
-FROM node:latest as clientbuild
+FROM node:lts-alpine3.12 as clientbuild
 
 RUN mkdir /client
 WORKDIR /client
@@ -9,7 +9,7 @@ WORKDIR /client
 COPY client/ /client
 RUN npm run build
 
-FROM node:latest
+FROM node:lts-alpine3.12
 
 RUN mkdir /server
 
