@@ -11,7 +11,7 @@
     "@iconify/icons-mdi": "^1.0.130",
     "core-js": "^3.6.5",
     "d3-celestial": "^0.7.30",
-    "vue": "^2.6.11",
+    "vue": "^2.6.12",
     "vue-native-websocket": "^2.0.14",
     "vue-router": "^3.4.3",
     "vue-ws": "0.0.2-beta",
@@ -27,7 +27,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {
     "root": true,
