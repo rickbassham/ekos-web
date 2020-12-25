@@ -1,5 +1,7 @@
 # ekos-web
 
+![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/rickbassham/ekos-web/latest)
+
 A simple web server and client that listens for a connection from KStars Ekos
 and provides an easy way to keep track of your astrophotography session from a
 small screen.
@@ -11,7 +13,16 @@ See screenshots below for more info.
 
 ## Installation
 
-First checkout the code.
+The easiest way to get going to to use the pre-built docker images.
+
+https://docs.docker.com/get-docker/
+
+```bash
+docker pull rickbassham/ekos-web:latest
+docker run -p 3000:3000 -it rickbassham/ekos-web:latest
+```
+
+Otherwise, first checkout the code.
 
 ```bash
 git clone https://github.com/rickbassham/ekos-web
@@ -20,7 +31,7 @@ cd ekos-web
 
 ### Docker
 
-Checkout the code from the repo, build the docker image, and run.
+Build the docker image, and run.
 
 ```bash
 docker build -t ekos-web .
