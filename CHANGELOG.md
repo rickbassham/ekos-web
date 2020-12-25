@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/rickbassham/ekos-web/compare/v1.0.0...v1.0.1) (2020-12-25)
+
+
+### Bug Fixes
+
+* add arm/v6 build target ([2cf21cc](https://github.com/rickbassham/ekos-web/commit/2cf21cc788cfbb795acc0ed3698c2c3c9160a8f5))
+
 # 1.0.0 (2020-12-24)
 
 
