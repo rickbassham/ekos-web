@@ -16,7 +16,7 @@
     "vue-router": "^3.4.9",
     "vue-ws": "0.0.2-beta",
     "vuetify": "^2.4.0",
-    "vuex": "^3.5.1",
+    "vuex": "^3.6.0",
     "ws": "^7.4.1"
   },
   "devDependencies": {
