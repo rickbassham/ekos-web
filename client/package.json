@@ -15,7 +15,7 @@
     "vue-native-websocket": "^2.0.14",
     "vue-router": "^3.4.9",
     "vue-ws": "0.0.2-beta",
-    "vuetify": "^2.4.0",
+    "vuetify": "^2.4.4",
     "vuex": "^3.6.0",
     "ws": "^7.4.1"
   },
