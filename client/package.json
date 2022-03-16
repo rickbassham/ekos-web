@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@iconify/icons-mdi": "^1.0.130",
+    "@iconify/icons-mdi": "^1.2.2",
     "core-js": "^3.8.1",
     "d3-celestial": "^0.7.35",
     "vue": "^2.6.12",
