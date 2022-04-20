@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@iconify/icons-mdi": "^1.0.130",
-    "core-js": "^3.8.1",
+    "core-js": "^3.22.1",
     "d3-celestial": "^0.7.35",
     "vue": "^2.6.12",
     "vue-native-websocket": "^2.0.14",
