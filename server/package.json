@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-gpsd": "^0.3.2",
+    "node-gpsd": "^0.3.3",
     "node-static": "^0.7.11",
     "reconnecting-websocket": "^4.4.0",
     "server-graceful-shutdown": "^0.1.2",
